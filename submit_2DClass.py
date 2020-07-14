@@ -107,12 +107,12 @@ def submit(**args):
     ctf_intact_first_peak = 1 if args['ctf_intact_first_peak'] else 0
     zero_mask = 1 if args['zero_mask'] else 0
     params = [
-        ('diam={:s}', args['diameter']),
-        ('K={:s}', args['numclass']),
-        ('tau2fudge={:s}', args['tau2_fudge']),
-        ('ctf={:01d}', ctf),
-        ('ignore1stpeak={:01d}', ctf_intact_first_peak),
-        ('zeromask={:01d}', zero_mask)]
+        ('diam-{:s}', args['diameter']),
+        ('K-{:s}', args['numclass']),
+        ('tau2-{:s}', args['tau2_fudge']),
+        ('ctf-{:01d}', ctf),
+        ('ign1p-{:01d}', ctf_intact_first_peak),
+        ('zerom-{:01d}', zero_mask)]
     specs = '_'.join([t.format(v) for (t, v) in params])
 
     submit_name = 'submit_%s_%s.sh' %(args['program'], specs)
@@ -172,12 +172,12 @@ def check_output_good(**args):
     ctf_intact_first_peak = 1 if args['ctf_intact_first_peak'] else 0
     zero_mask = 1 if args['zero_mask'] else 0
     params = [
-        ('diam={:s}', args['diameter']),
-        ('K={:s}', args['numclass']),
-        ('tau2fudge={:s}', args['tau2_fudge']),
-        ('ctf={:01d}', ctf),
-        ('ignore1stpeak={:01d}', ctf_intact_first_peak),
-        ('zeromask={:01d}', zero_mask)]
+        ('diam-{:s}', args['diameter']),
+        ('K-{:s}', args['numclass']),
+        ('tau2-{:s}', args['tau2_fudge']),
+        ('ctf-{:01d}', ctf),
+        ('ign1p-{:01d}', ctf_intact_first_peak),
+        ('zerom-{:01d}', zero_mask)]
     specs = '_'.join([t.format(v) for (t, v) in params])
     output_dir = os.path.join(args['output'], specs)
 

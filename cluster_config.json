@@ -1,0 +1,10 @@
+{
+  "lsi": {
+    "job_name": "default_jobname",
+    "walltime": "24:00:00",
+    "queue_name": "batch",
+    "nodes": "1",
+    "query_cmd": "qstat ",
+    "keyarg": "job_state = "
+  }
+}

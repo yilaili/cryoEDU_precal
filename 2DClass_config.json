@@ -6,7 +6,7 @@
     "runerr": "2> 2DClass/run_2DClass.err "
   },
   "relion_2DClass": {
-    "module": "module load relion/3.1-cluster",
+    "module": "module load relion/3.1beta-cluster/openmpi/4.0.2",
     "extra": "",
     "conda_env": "",
     "command": "mpirun -np $$np relion_refine_mpi ",

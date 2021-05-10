@@ -1,10 +1,9 @@
 {
   "lsi": {
-    "job_name": "default_jobname",
-    "walltime": "24:00:00",
-    "queue_name": "batch",
-    "nodes": "1",
-    "query_cmd": "qstat ",
+    "jobname": "default_jobname",
+    "time": "24:00:00",
+    "queuename": "sb-96",
+    "querycmd": "squeue --noheader --long --states=completing,running,pending,configuring -j ",
     "keyarg": "job_state = "
   }
 }

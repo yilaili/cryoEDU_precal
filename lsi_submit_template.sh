@@ -1,23 +1,20 @@
 #!/bin/bash
-### Job name
-#PBS -N $$job_name
-### Keep Output and Error
-#PBS -k eo
-### Queue name
-#PBS -q $$queue_name
-### Specify the number of nodes and thread (ppn) for your job.
-#PBS -l nodes=$$nodes:ppn=20
-### Tell PBS the anticipated run-time for your job, where walltime=HH:MM:SS
-#PBS -l walltime=$$walltime
-#################################
-NSLOTS=$(wc -l $PBS_NODEFILE|awk {'print $1'})
+
+#SBATCH --job-name=$$jobname
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --partition=$$queuename
+#SBATCH --ntasks=$$mpinodes
+#SBATCH --cpus-per-task=$$threads
+#SBATCH --output=$$stdout
+#SBATCH --error=$$stderr
+#SBATCH --open-mode=append
+#SBATCH --export=NONE
+#SBATCH --time=$$time
+#SBATCH --mem-per-cpu=3g
+#SBATCH
+#SBATCH
 
 module purge
-module load python-anaconda3/latest
-
 $$modules
-$$extra
-$$conda_env
-cd $PBS_O_WORKDIR
-### Run:
-$$command_to_run
+
+srun --mem-per-cpu=3g --mpi=pmi2 $$command_to_run

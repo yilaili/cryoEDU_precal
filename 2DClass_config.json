@@ -1,16 +1,13 @@
 {
   "general": {
-    "input": "-i ",
-    "output": "-o ",
-    "runout": "> 2DClass/run_2DClass.out ",
-    "runerr": "2> 2DClass/run_2DClass.err "
+    "stdout": "2DClass/run.out ",
+    "stderr": "2DClass/run.err ",
+    "mpinodes": 10,
+    "threads": 10
   },
   "relion_2DClass": {
-    "module": "module load relion/3.1beta-cluster/openmpi/4.0.2",
-    "extra": "",
-    "conda_env": "",
-    "command": "mpirun -np $$np relion_refine_mpi ",
-    "parameters": "--dont_combine_weights_via_disc --pool 100 --pad 2 --iter 25 --tau2_fudge $$tau2_fudge --particle_diameter $$diameter --fast_subsets --K $$K --flatten_solvent --oversampling 1 --psi_step 12 --offset_range 5 --offset_step 2 --norm --scale --j 1 ",
-    "tail": "< /dev/null"
+    "module": "relion-cpu/3.1.0",
+    "command": "`which relion_refine_mpi` ",
+    "parameters": "--i $$input --o $$output --dont_combine_weights_via_disc --pool 3 --pad 2 --ctf --iter 25 --tau2_fudge $$tau2_fudge --particle_diameter $$diam --K $$numclass --flatten_solvent --zero_mask --oversampling 1 --psi_step 10 --offset_range 5 --offset_step 2 --norm --scale --j $$threads ",
   }
 }

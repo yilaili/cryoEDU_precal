@@ -1,6 +1,6 @@
 '''
-Write the submission script for Comet, given:
-1. comet_submit_template.sh
+Write the submission script, given:
+1. lsi_submit_template.sh
 2. cluster_config.json
 3. job_config.json for any type of job
 4. All the job specific parameters given
@@ -9,27 +9,37 @@ Write the submission script for Comet, given:
 import json
 import os
 
-def editclusterconfig_cpu(jobname, walltime, nodes, \
-    cluster_config_file='cluster_config.json', cluster='lsi', \
-    queue_name='batch', query_cmd='qstat ', keyarg='job_state = '):
+def editclusterconfig(
+    jobname, walltime,
+    cluster_config_file='cluster_config.json',
+    cluster='lsi',
+    queue_name='sb-96',
+    query_cmd='squeue --noheader --long --states=completing,running,pending,configuring -j ',
+    keyarg='job_state = '):
 
     '''
-    Edit the cluster config json file. Default is using the compute cluster on comet,
-    with allocation for the cosmic2 project.
+    Edit the cluster config json file.
     '''
 
     with open(cluster_config_file, 'r') as f:
         cluster_config = json.load(f)
-    cluster_config[cluster]['job_name'] = jobname
-    cluster_config[cluster]['walltime'] = walltime
-    cluster_config[cluster]['queue_name'] = queue_name
-    cluster_config[cluster]['nodes'] = nodes
-    cluster_config[cluster]['query_cmd'] = query_cmd
+
+    cluster_config[cluster]['jobname'] = jobname
+    cluster_config[cluster]['time'] = walltime
+    cluster_config[cluster]['queuename'] = queue_name
+    cluster_config[cluster]['querycmd'] = query_cmd
     cluster_config[cluster]['keyarg'] = keyarg
+
     return cluster_config
 
-def editjobconfig(job_config_file, program, input, output, stdout, stderr, \
-    module, conda_env, command, parameters, extra='', tail=''):
+def editjobconfig(
+    job_config_file,
+    program,
+    stdout, stderr,
+    input, output,
+    module,
+    command,
+    parameters):
 
     '''
     Edit the job config file with the input information.
@@ -37,31 +47,33 @@ def editjobconfig(job_config_file, program, input, output, stdout, stderr, \
 
     with open(job_config_file, 'r') as f:
         job_config = json.load(f)
-    job_config['general']['input'] = input
-    job_config['general']['output'] = output
+
     job_config['general']['stdout'] = stdout
     job_config['general']['stderr'] = stderr
+    job_config['general']['mpinodes'] = nodes
+    job_config['general']['threads'] = threads
+
+    job_config[program]['input'] = input
+    job_config[program]['output'] = output
     job_config[program]['module'] = module
-    job_config[program]['extra'] = extra
-    job_config[program]['conda_env'] = conda_env
     job_config[program]['command'] = command
     job_config[program]['parameters'] = parameters
-    job_config[program]['tail'] = tail
-    # s = job_config[program]['parameters']
-    # job_config[program]['parameters'] = editparameter(s, model, threshold)
+
     return job_config
 
-def write_submit_lsi(codedir, wkdir, submit_name, \
-                        jobname, walltime, nodes, \
-                        job_config_file, program, \
-                        input, output, stdout, stderr, \
-                        module, conda_env, command, parameters, \
-                        template_file, \
-                        cluster, cluster_config_file='cluster_config.json', \
-                        extra='', tail=''):
+def write_submit_lsi(codedir, wkdir, submit_name,
+                        jobname, walltime, nodes,
+                        job_config_file, program,
+                        input, output, stdout, stderr,
+                        module, conda_env, command, parameters,
+                        template_file,
+                        cluster,
+                        cluster_config_file='cluster_config.json',
+                        ):
     # wkdir is the directory where the submission file is written into
     # codedir is the directory where all the template files are
-    cluster_config = editclusterconfig_cpu(jobname, walltime, nodes)
+
+    cluster_config = editclusterconfig(jobname, walltime, cluster=cluster)
 
     job_config = editjobconfig(job_config_file, \
                                 program, \

@@ -10,107 +10,123 @@ import json
 import os
 
 def editclusterconfig(
-    jobname, walltime,
-    cluster_config_file='cluster_config.json',
-    cluster='lsi',
-    queue_name='sb-96',
-    query_cmd='squeue --noheader --long --states=completing,running,pending,configuring -j ',
-    keyarg='job_state = '):
-
+    jobname,
+    time,
+    cluster_config_file,
+    cluster,
+    # queuename,
+    # querycmd,
+    # keyarg,
+    ):
     '''
     Edit the cluster config json file.
     '''
-
     with open(cluster_config_file, 'r') as f:
         cluster_config = json.load(f)
 
     cluster_config[cluster]['jobname'] = jobname
-    cluster_config[cluster]['time'] = walltime
-    cluster_config[cluster]['queuename'] = queue_name
-    cluster_config[cluster]['querycmd'] = query_cmd
-    cluster_config[cluster]['keyarg'] = keyarg
+    cluster_config[cluster]['time'] = time
+    # cluster_config[cluster]['queuename'] = queuename
+    # cluster_config[cluster]['querycmd'] = querycmd
+    # cluster_config[cluster]['keyarg'] = keyarg
 
     return cluster_config
+
 
 def editjobconfig(
     job_config_file,
     program,
-    stdout, stderr,
-    input, output,
-    module,
-    command,
+    # stdout, stderr,
+    # input, output,
+    # module,
+    # command,
     parameters):
-
     '''
     Edit the job config file with the input information.
     '''
-
     with open(job_config_file, 'r') as f:
         job_config = json.load(f)
 
-    job_config['general']['stdout'] = stdout
-    job_config['general']['stderr'] = stderr
+    # job_config['general']['stdout'] = stdout
+    # job_config['general']['stderr'] = stderr
     job_config['general']['mpinodes'] = nodes
     job_config['general']['threads'] = threads
 
-    job_config[program]['input'] = input
-    job_config[program]['output'] = output
-    job_config[program]['module'] = module
-    job_config[program]['command'] = command
+    # job_config[program]['input'] = input
+    # job_config[program]['output'] = output
+    # job_config[program]['module'] = module
+    # job_config[program]['command'] = command
     job_config[program]['parameters'] = parameters
 
     return job_config
 
-def write_submit_lsi(codedir, wkdir, submit_name,
-                        jobname, walltime, nodes,
-                        job_config_file, program,
-                        input, output, stdout, stderr,
-                        module, conda_env, command, parameters,
-                        template_file,
-                        cluster,
-                        cluster_config_file='cluster_config.json',
-                        ):
+
+def write_submit_lsi(
+    codedir,
+    wkdir,
+    submission_script,
+    template_file,
+    job_config_file,
+    program,
+    # stdout, stderr,
+    # input, output,
+    # module,
+    # command,
+    parameters,
+    jobname, time,
+    cluster_config_file='cluster_config.json',
+    cluster='lsi',
+    # queuename='sb-96',
+    # querycmd='squeue --noheader --long --states=completing,running,pending,configuring -j ',
+    # keyarg="job_state = ",
+    ):
+
     # wkdir is the directory where the submission file is written into
     # codedir is the directory where all the template files are
 
-    cluster_config = editclusterconfig(jobname, walltime, cluster=cluster)
+    job_config = editjobconfig(
+                        job_config_file=job_config_file,
+                        program,
+                        # stdout, stderr,
+                        # input, output,
+                        # module,
+                        # command,
+                        parameters,
+                        )
 
-    job_config = editjobconfig(job_config_file, \
-                                program, \
-                                input, output, stdout, stderr, \
-                                module, \
-                                conda_env, \
-                                command, \
-                                parameters, \
-                                extra='', \
-                                tail='')
+    cluster_config = editclusterconfig(
+                        jobname=jobname,
+                        time=time,
+                        cluster_config_file=cluster_config_file,
+                        cluster=cluster,
+                        # queuename=queuename,
+                        # querycmd=querycmd,
+                        # keyarg=keyarg,
+                        )
 
-    command = job_config[program]['command'] + \
-                job_config['general']['input'] + \
-                job_config['general']['output'] + \
-                job_config[program]['parameters'] + \
-                job_config['general']['stdout'] + \
-                job_config['general']['stderr'] + \
-                job_config[program]['tail']
+    command = job_config[program]['command'] + job_config[program]['parameters']
 
     os.chdir(wkdir)
     ## Below: remove the submission file if exists
     try:
-        os.remove(submit_name)
+        os.remove(submission_script)
     except OSError:
         pass
+
     ## Below: write the submission file
     with open(os.path.join(codedir, template_file), 'r') as f:
-        with open(submit_name, 'w') as new_f:
+        with open(submission_script, 'w') as new_f:
             for line in f:
                 # newline = line.decode('utf-8').replace('$$job_name', cluster_config[cluster]['job_name'])\
-                newline = line.replace('$$job_name', cluster_config[cluster]['job_name'])\
-                .replace('$$walltime', cluster_config[cluster]['walltime'])\
-                .replace('$$queue_name', cluster_config[cluster]['queue_name'])\
-                .replace('$$nodes', cluster_config[cluster]['nodes'])\
-                .replace('$$modules', job_config[program]['module'])\
-                .replace('$$extra', job_config[program]['extra'])\
-                .replace('$$conda_env', job_config[program]['conda_env'])\
+                newline = line
+                .replace('$$jobname', cluster_config[cluster]['jobname'])
+                .replace('$$queuename', cluster_config[cluster]['queuename'])
+                .replace('$$mpinodes', cluster_config[cluster]['mpinodes'])
+                .replace('$$stdout', job_config['general']['stdout'])
+                .replace('$$stderr', job_config['general']['stderr'])
+                .replace('$$threads', cluster_config[cluster]['threads'])
+                .replace('$$time', cluster_config[cluster]['time'])
+                .replace('$$modules', job_config[program]['module'])
                 .replace('$$command_to_run', command)
                 # new_f.write(newline.encode('utf-8'))
                 new_f.write(newline)

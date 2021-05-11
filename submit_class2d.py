@@ -28,9 +28,9 @@ def setupParserOptions():
     ## General inputs
     ap.add_argument('-i', '--input',
                     help="Provide star file of the ctf corrected micrographs.")
-    ap.add_argument('-o','--output', default='2DClass',
+    ap.add_argument('-o','--output', default='Class2D',
                     help="Name of the directory where the outputs of 2d classification are stored.")
-    ap.add_argument('-p', '--program', default='relion_2DClass',
+    ap.add_argument('-p', '--program', default='relion_Class2D',
                     help='The program to use to do particle extraction. Currently only supports relion_class2d.')
     ## Program specific parameters
     ap.add_argument('-d', '--diameter',
@@ -48,24 +48,38 @@ def setupParserOptions():
     ## Cluster submission needed
     ap.add_argument('--template', default='lsi_submit_template.sh', help="Name of the submission template.")
     ap.add_argument('--cluster', default='lsi', help='The computer cluster the job will run on.')
-    ap.add_argument('--jobname', default='2DClassification', help='Jobname on the submission script.')
+    ap.add_argument('--jobname', default='Class2D', help='Jobname on the submission script.')
     # ap.add_argument('--user_email', help='User email address to send the notification to.')
-    ap.add_argument('--walltime', default='48:00:00', help='Expected max run time of the job.')
-    ap.add_argument('--nodes', default='2',help='Number of nodes used in the computer cluster.')
+    ap.add_argument('--time', default='48:00:00', help='Expected max run time of the job.')
+    ap.add_argument('--mpinodes', default='10',help='Number of mpi processes used in the compute cluster.')
+    ap.add_argument('--threads', default='10',help='Number of threads used per mpi process.')
 
     args = vars(ap.parse_args())
     return args
 
-def editparameters(s, diameter, k, tau2_fudge, ctf, ctf_intact_first_peak, zero_mask):
+def editparameters(s,
+    input, output,
+    diameter, numclass, tau2_fudge, threads,
+    ctf, ctf_intact_first_peak, zero_mask):
+
     if not ctf:
         assert not ctf_intact_first_peak
-    new_s = s.replace('$$diameter', diameter).replace('$$K', k).replace('$$tau2_fudge', tau2_fudge)
+
+    new_s = s
+            .replace('$$input', input)
+            .replace('$$output', output)
+            .replace('$$diameter', diameter)
+            .replace('$$numclass', numclass)
+            .replace('$$tau2_fudge', tau2_fudge)
+            .replace('$$j', threads)
+
     if ctf:
         new_s += '--ctf '
     if ctf_intact_first_peak:
         new_s += '--ctf_intact_first_peak '
     if zero_mask:
         new_s += '--zero_mask '
+
     return new_s
 
 def check_good(class_dir):
@@ -75,13 +89,29 @@ def check_good(class_dir):
     '''
     return os.path.isfile(os.path.join(class_dir, 'run_it025_model.star'))
 
+def outdir_naming(**args):
+    ## Output directory naming
+    ctf = 1 if args['ctf'] else 0
+    ctf_intact_first_peak = 1 if args['ctf_intact_first_peak'] else 0
+    zero_mask = 1 if args['zero_mask'] else 0
+    params = [
+        ('diam-{:s}', args['diameter']),
+        ('K-{:s}', args['numclass']),
+        ('tau2-{:s}', args['tau2_fudge']),
+        ('ctf-{:01d}', ctf),
+        ('ign1p-{:01d}', ctf_intact_first_peak),
+        ('zerom-{:01d}', zero_mask)]
+    specs = '_'.join([t.format(v) for (t, v) in params])
+
+    return specs
+
 def submit(**args):
 
     cluster = args['cluster']
     codedir = os.path.abspath(os.path.join(os.path.realpath(sys.argv[0]), os.pardir))
     wkdir = os.path.abspath(os.path.join(os.path.dirname(args['input']), os.pardir))
-    cluster_config_file='cluster_config.json'
-    job_config_file = '2DClass_config.json'
+    cluster_config_file = 'cluster_config.json'
+    job_config_file = 'config_class2d.json'
 
     ## mkdir to setup the job
     os.chdir(wkdir)
@@ -98,87 +128,71 @@ def submit(**args):
 
     jobname = args['jobname']
     # user_email = args['user_email']
-    walltime = args['walltime']
+    time = args['time']
     program = args['program']
-    nodes = args['nodes']
-    # np = str(4*int(nodes))
+    mpinodes = args['mpinodes']
+    threads = args['threads']
 
-    ctf = 1 if args['ctf'] else 0
-    ctf_intact_first_peak = 1 if args['ctf_intact_first_peak'] else 0
-    zero_mask = 1 if args['zero_mask'] else 0
-    params = [
-        ('diam-{:s}', args['diameter']),
-        ('K-{:s}', args['numclass']),
-        ('tau2-{:s}', args['tau2_fudge']),
-        ('ctf-{:01d}', ctf),
-        ('ign1p-{:01d}', ctf_intact_first_peak),
-        ('zerom-{:01d}', zero_mask)]
-    specs = '_'.join([t.format(v) for (t, v) in params])
-
-    submit_name = 'submit_%s_%s.sh' %(args['program'], specs)
-    input = '--i %s '%args['input']
+    specs = outdir_naming(**args)
+    submission_script = 'submit_%s_%s.sh' %(args['program'], specs)
+    input = args['input']
     output_dir = os.path.join(args['output'], specs)
-    output = '--o %s/run '%output_dir
-    stdout = os.path.join('> %s'%output_dir, 'run_%s.out '%args['program'])
-    stderr = os.path.join('2> %s'%output_dir, 'run_%s.err '%args['program'])
-    module = 'module load relion/3.1beta-cluster/openmpi/4.0.2'
-    conda_env = ''
-    command = 'mpirun -np $NSLOTS `which relion_refine_mpi` '
-    parameters = editparameters(job_config[program]['parameters'], \
-                                args['diameter'], args['numclass'], args['tau2_fudge'],
+    output = '%s/run '%output_dir
+
+    parameters = editparameters(job_config[program]['parameters'],
+                                input, output,
+                                args['diameter'], args['numclass'], args['tau2_fudge'], args['threads'],
                                 args['ctf'], args['ctf_intact_first_peak'], args['zero_mask'])
 
-    write_submit_lsi(codedir, wkdir, submit_name, \
-                        jobname, walltime, nodes, \
-                        job_config_file, program, \
-                        input, output, stdout, stderr, \
-                        module, conda_env, command, parameters, \
-                        template_file=args['template'],\
-                        cluster='lsi')
+    write_submit_lsi(
+        codedir=codedir,
+        wkdir=wkdir,
+        submission_script=submission_script,
+        template_file=args['template'],
+        job_config_file=job_config_file,
+        program=program,
+        parameters=parameters,
+        jobname=jobname,
+        time=time,
+        cluster_config_file='cluster_config.json',
+        cluster=args['cluster'],
+        )
+
 
     os.chdir(wkdir)
     try:
         shutil.rmtree(output_dir)
         os.mkdir(output_dir)
     except OSError:
-        os.mkdir(output_dir) # make "diamxxxkxxx" directory under the output directory
+        os.mkdir(output_dir) # make "specs" directory under the output directory
 
-    cmd = 'qsub ' + submit_name
-    job_id = subprocess.check_output(cmd, shell=True)
-    job_id = job_id.decode("utf-8")
-    job_id = str(int(job_id))
+    cmd = 'sbatch ' + submission_script
+    jobid = subprocess.check_output(cmd, shell=True)
+    jobid = jobid.decode("utf-8")
+    jobid = str(int(job_id))
+
     with open('%s_%s_log.txt' %(args['program'], specs), 'a+') as f:
-        f.write('Job submitted. Parameters is %s. Job ID is %s.\n' %(specs, job_id))
-    query_cmd = cluster_config[cluster]['query_cmd']
+        f.write('Job submitted. Parameters is %s. Job ID is %s.\n' %(specs, jobid))
+    querycmd = cluster_config[cluster]['querycmd']
     keyarg = cluster_config[cluster]['keyarg']
-    # os.chdir(codedir) ## cd back to the directory of the code
-    return job_id, query_cmd, keyarg
+
+    return jobid, querycmd, keyarg
 
 
-def check_complete(job_id, query_cmd, keyarg):
+def check_complete(jobid, querycmd, keyarg):
     ## Below: check every 2 seconds if the job has finished.
-    state = check_state_lsi(query_cmd, job_id, keyarg)
+    state = check_state_lsi(querycmd, jobid, keyarg)
     start_time = time.time()
     interval = 2
     while state!='C':
         time.sleep(interval)
-        state = check_state_lsi(query_cmd, job_id, keyarg)
+        state = check_state_lsi(querycmd, jobid, keyarg)
 
 def check_output_good(**args):
     wkdir = os.path.abspath(os.path.join(os.path.dirname(args['input']), os.pardir))
     os.chdir(wkdir)
 
-    ctf = 1 if args['ctf'] else 0
-    ctf_intact_first_peak = 1 if args['ctf_intact_first_peak'] else 0
-    zero_mask = 1 if args['zero_mask'] else 0
-    params = [
-        ('diam-{:s}', args['diameter']),
-        ('K-{:s}', args['numclass']),
-        ('tau2-{:s}', args['tau2_fudge']),
-        ('ctf-{:01d}', ctf),
-        ('ign1p-{:01d}', ctf_intact_first_peak),
-        ('zerom-{:01d}', zero_mask)]
-    specs = '_'.join([t.format(v) for (t, v) in params])
+    specs = outdir_naming(**args)
     output_dir = os.path.join(args['output'], specs)
 
     ## Below: check if the particle picking output is correct.
@@ -193,6 +207,6 @@ def check_output_good(**args):
 
 if __name__ == '__main__':
     args = setupParserOptions()
-    job_id, query_cmd, keyarg = submit(**args)
-    check_complete(job_id, query_cmd, keyarg)
+    jobid, querycmd, keyarg = submit(**args)
+    check_complete(jobid, querycmd, keyarg)
     check_output_good(**args)

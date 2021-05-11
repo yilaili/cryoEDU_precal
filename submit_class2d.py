@@ -4,11 +4,12 @@ import argparse
 import os
 import sys
 import subprocess
-from check_if_done import check_state_lsi
 import time
 import shutil
-from write_submit_script_lsi import write_submit_lsi
 import re
+
+from lib.check_if_done import check_state_lsi
+from lib.write_submit_script_lsi import write_submit_lsi
 
 '''
 Submit relion 2D classification job.
@@ -46,19 +47,26 @@ def setupParserOptions():
     ap.add_argument('--zero_mask', action='store_true',
                     help="Mask surrounding background in particles to zero. Default is FALSE.")
     ## Cluster submission needed
-    ap.add_argument('--template', default='lsi_submit_template.sh', help="Name of the submission template.")
-    ap.add_argument('--cluster', default='lsi', help='The computer cluster the job will run on.')
-    ap.add_argument('--jobname', default='Class2D', help='Jobname on the submission script.')
+    ap.add_argument('--template', default='config/lsi_submit_template.sh',
+                    help="Name of the submission template.")
+    ap.add_argument('--cluster', default='lsi',
+                    help='The computer cluster the job will run on.')
+    ap.add_argument('--jobname', default='Class2D',
+                    help='Jobname on the submission script.')
     # ap.add_argument('--user_email', help='User email address to send the notification to.')
-    ap.add_argument('--time', default='48:00:00', help='Expected max run time of the job.')
-    ap.add_argument('--mpinodes', default='10',help='Number of mpi processes used in the compute cluster.')
-    ap.add_argument('--threads', default='10',help='Number of threads used per mpi process.')
+    ap.add_argument('--time', default='48:00:00',
+                    help='Expected max run time of the job.')
+    ap.add_argument('--mpinodes', default='10',
+                    help='Number of mpi processes used in the compute cluster.')
+    ap.add_argument('--threads', default='10',
+                    help='Number of threads used per mpi process.')
 
     args = vars(ap.parse_args())
     return args
 
-def editparameters(s,
-    input, output,
+
+def editparameters(
+    s, input, output,
     diameter, numclass, tau2_fudge, threads,
     ctf, ctf_intact_first_peak, zero_mask):
 
@@ -82,12 +90,14 @@ def editparameters(s,
 
     return new_s
 
+
 def check_good(class_dir):
     '''
     Currently only supports relion 2D classification.
     Check if 'run_it025_model.star' file exists.
     '''
     return os.path.isfile(os.path.join(class_dir, 'run_it025_model.star'))
+
 
 def outdir_naming(**args):
     ## Output directory naming
@@ -105,13 +115,14 @@ def outdir_naming(**args):
 
     return specs
 
+
 def submit(**args):
 
     cluster = args['cluster']
     codedir = os.path.abspath(os.path.join(os.path.realpath(sys.argv[0]), os.pardir))
     wkdir = os.path.abspath(os.path.join(os.path.dirname(args['input']), os.pardir))
-    cluster_config_file = 'cluster_config.json'
-    job_config_file = 'config_class2d.json'
+    cluster_config_file = 'config/cluster_config.json'
+    job_config_file = 'config/config_class2d.json'
 
     ## mkdir to setup the job
     os.chdir(wkdir)
@@ -154,10 +165,9 @@ def submit(**args):
         parameters=parameters,
         jobname=jobname,
         time=time,
-        cluster_config_file='cluster_config.json',
-        cluster=args['cluster'],
+        cluster_config_file=cluster_config_file,
+        cluster=cluster,
         )
-
 
     os.chdir(wkdir)
     try:
@@ -171,7 +181,7 @@ def submit(**args):
     jobid = jobid.decode("utf-8")
     jobid = str(int(job_id))
 
-    with open('%s_%s_log.txt' %(args['program'], specs), 'a+') as f:
+    with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
         f.write('Job submitted. Parameters is %s. Job ID is %s.\n' %(specs, jobid))
     querycmd = cluster_config[cluster]['querycmd']
     keyarg = cluster_config[cluster]['keyarg']
@@ -188,6 +198,7 @@ def check_complete(jobid, querycmd, keyarg):
         time.sleep(interval)
         state = check_state_lsi(querycmd, jobid, keyarg)
 
+
 def check_output_good(**args):
     wkdir = os.path.abspath(os.path.join(os.path.dirname(args['input']), os.pardir))
     os.chdir(wkdir)
@@ -196,14 +207,15 @@ def check_output_good(**args):
     output_dir = os.path.join(args['output'], specs)
 
     ## Below: check if the particle picking output is correct.
-    with open('%s_%s_log.txt' %(args['program'], specs), 'a+') as f:
+    with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
         f.write('Checking outputs....\n')
     isgood = check_good(output_dir)
-    with open('%s_%s_log.txt' %(args['program'], specs), 'a+') as f:
+    with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
         if isgood:
             f.write('2D classification for %s has finished.\n'%specs)
         else:
             f.write('Submission job %s is done but the output may not be right. Please check.\n'%specs)
+
 
 if __name__ == '__main__':
     args = setupParserOptions()

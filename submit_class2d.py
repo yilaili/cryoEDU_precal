@@ -141,7 +141,7 @@ def submit(**args):
     time = args['time']
     program = args['program']
     mpinodes = args['mpinodes']
-    threads = args['threads']
+    # threads = args['threads']
 
     specs = outdir_naming(**args)
     submission_script = 'submit_%s_%s.sh' %(args['program'], specs)
@@ -162,7 +162,7 @@ def submit(**args):
         job_config_file=job_config_file,
         program=program,
         mpinodes=mpinodes,
-        threads=threads,
+        # threads=threads,
         parameters=parameters,
         jobname=jobname,
         time=time,

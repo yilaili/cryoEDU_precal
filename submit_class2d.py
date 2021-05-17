@@ -194,7 +194,7 @@ def check_complete(jobid, querycmd, keyarg):
     state = check_state_lsi(querycmd, jobid, keyarg)
     start_time = time.time()
     interval = 2
-    while state!='C':
+    while state!='completed':
         time.sleep(interval)
         state = check_state_lsi(querycmd, jobid, keyarg)
 

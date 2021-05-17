@@ -74,11 +74,11 @@ def editparameters(
         assert not ctf_intact_first_peak
 
     new_s = s.replace('$$input', input)
-            .replace('$$output', output)
-            .replace('$$diameter', diameter)
-            .replace('$$numclass', numclass)
-            .replace('$$tau2_fudge', tau2_fudge)
-            .replace('$$j', threads)
+    .replace('$$output', output)
+    .replace('$$diameter', diameter)
+    .replace('$$numclass', numclass)
+    .replace('$$tau2_fudge', tau2_fudge)
+    .replace('$$j', threads)
 
     if ctf:
         new_s += '--ctf '

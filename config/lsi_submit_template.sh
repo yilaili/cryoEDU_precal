@@ -8,7 +8,7 @@
 #SBATCH --output=$$stdout
 #SBATCH --error=$$stderr
 #SBATCH --open-mode=append
-#SBATCH --export=NONE
+#SBATCH --export=ALL
 #SBATCH --time=$$time
 #SBATCH --mem-per-cpu=3g
 #SBATCH

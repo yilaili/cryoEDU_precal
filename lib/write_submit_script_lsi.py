@@ -37,7 +37,7 @@ def editjobconfig(
     job_config_file,
     program,
     mpinodes,
-    threads,
+    # threads,
     # stdout, stderr,
     # input, output,
     # module,
@@ -52,7 +52,7 @@ def editjobconfig(
     # job_config['general']['stdout'] = stdout
     # job_config['general']['stderr'] = stderr
     job_config['general']['mpinodes'] = mpinodes
-    job_config['general']['threads'] = threads
+    # job_config['general']['threads'] = threads
 
     # job_config[program]['input'] = input
     # job_config[program]['output'] = output
@@ -71,7 +71,7 @@ def write_submit_lsi(
     job_config_file,
     program,
     mpinodes,
-    threads,
+    # threads,
     # stdout, stderr,
     # input, output,
     # module,
@@ -92,7 +92,7 @@ def write_submit_lsi(
                         job_config_file=job_config_file,
                         program=program,
                         mpinodes=mpinodes,
-                        threads=threads,
+                        # threads=threads,
                         # stdout, stderr,
                         # input, output,
                         # module,
@@ -126,10 +126,10 @@ def write_submit_lsi(
                 # newline = line.decode('utf-8').replace('$$job_name', cluster_config[cluster]['job_name'])\
                 newline = line.replace('$$jobname', cluster_config[cluster]['jobname'])\
                 .replace('$$queuename', cluster_config[cluster]['queuename'])\
-                .replace('$$mpinodes', cluster_config[cluster]['mpinodes'])\
+                .replace('$$mpinodes', job_config['general']['mpinodes'])\
                 .replace('$$stdout', job_config['general']['stdout'])\
                 .replace('$$stderr', job_config['general']['stderr'])\
-                .replace('$$threads', cluster_config[cluster]['threads'])\
+                .replace('$$threads', job_config['general']['threads'])\
                 .replace('$$time', cluster_config[cluster]['time'])\
                 .replace('$$modules', job_config[program]['module'])\
                 .replace('$$command_to_run', command)

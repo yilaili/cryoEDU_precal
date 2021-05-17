@@ -58,8 +58,8 @@ def setupParserOptions():
                     help='Expected max run time of the job.')
     ap.add_argument('--mpinodes', default='10',
                     help='Number of mpi processes used in the compute cluster.')
-    ap.add_argument('--threads', default='10',
-                    help='Number of threads used per mpi process.')
+    # ap.add_argument('--threads', default='10',
+    #                 help='Number of threads used per mpi process.')
 
     args = vars(ap.parse_args())
     return args
@@ -73,7 +73,12 @@ def editparameters(
     if not ctf:
         assert not ctf_intact_first_peak
 
-    new_s = s.replace('$$input', input).replace('$$output', output).replace('$$diameter', diameter).replace('$$numclass', numclass).replace('$$tau2_fudge', tau2_fudge).replace('$$j', threads)
+    new_s = s.replace('$$input', input)\
+            .replace('$$output', output)\
+            .replace('$$diameter', diameter)\
+            .replace('$$numclass', numclass)\
+            .replace('$$tau2_fudge', tau2_fudge)\
+            .replace('$$j', threads)
 
     if ctf:
         new_s += '--ctf '

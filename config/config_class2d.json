@@ -6,7 +6,7 @@
     "threads": "10"
   },
   "relion_Class2D": {
-    "module": "relion-cpu/3.1.0",
+    "module": "module load relion-cpu/3.1.0",
     "command": "`which relion_refine_mpi` ",
     "parameters": "--i $$input --o $$output --dont_combine_weights_via_disc --pool 3 --pad 2 --iter 25 --tau2_fudge $$tau2_fudge --particle_diameter $$diam --K $$numclass --flatten_solvent --oversampling 1 --psi_step 10 --offset_range 5 --offset_step 2 --norm --scale --j $$threads "
   }

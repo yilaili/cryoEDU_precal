@@ -156,6 +156,8 @@ def submit(**args):
         template_file=args['template'],
         job_config_file=job_config_file,
         program=program,
+        mpinodes=mpinodes,
+        threads=threads,
         parameters=parameters,
         jobname=jobname,
         time=time,

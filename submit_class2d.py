@@ -75,7 +75,7 @@ def editparameters(
 
     new_s = s.replace('$$input', input)\
             .replace('$$output', output)\
-            .replace('$$diameter', diameter)\
+            .replace('$$diam', diameter)\
             .replace('$$numclass', numclass)\
             .replace('$$tau2_fudge', tau2_fudge)\
             .replace('$$threads', threads)

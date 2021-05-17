@@ -18,9 +18,7 @@
 cd $SLURM_SUBMIT_DIR
 
 module purge
-module load openmpi/4.0.0
-module load relion/3.1b
-module load cuda/10.0
+$$modules
 
 srun --mem-per-cpu=5g --mpi=pmi2 $$command_to_run
 exit

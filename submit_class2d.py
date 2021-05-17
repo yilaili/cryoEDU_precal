@@ -214,7 +214,7 @@ def check_output_good(**args):
 
     ## Below: check if the particle picking output is correct.
     with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
-        f.write('Checking outputs....\n')
+        f.write('Job done. Checking outputs....\n')
     isgood = check_good(output_dir)
     with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
         if isgood:

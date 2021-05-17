@@ -5,5 +5,12 @@
     "queuename": "sb-96",
     "querycmd": "squeue --noheader --long --states=completing,running,pending,configuring -j ",
     "keyarg": "job_state = "
+  },
+  "herzik": {
+    "jobname": "default_jobname",
+    "time": "24:00:00",
+    "queuename": "gpu-cpu",
+    "querycmd": "squeue --noheader --long --states=completing,running,pending,configuring -j ",
+    "keyarg": "job_state = "
   }
 }

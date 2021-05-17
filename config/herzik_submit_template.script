@@ -1,0 +1,26 @@
+#!/bin/csh
+
+#SBATCH --partition=$$queuename
+#SBATCH --job-name=$$jobname
+#SBATCH --nodes=1
+#SBATCH --gres=gpu:2
+#SBATCH --ntasks=$$mpinodes
+#SBATCH --cpus-per-task=$$threads
+#SBATCH --mem-per-cpu=5g
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=hon005@ucsd.edu
+#SBATCH --output=$$stdout
+#SBATCH --error=$$stderr
+#SBATCH --time=$$time
+#SBATCH
+
+
+cd $SLURM_SUBMIT_DIR
+
+module purge
+module load openmpi/4.0.0
+module load relion/3.1b
+module load cuda/10.0
+
+srun --mem-per-cpu=5g --mpi=pmi2 $$command_to_run
+exit

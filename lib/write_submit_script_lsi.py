@@ -36,6 +36,8 @@ def editclusterconfig(
 def editjobconfig(
     job_config_file,
     program,
+    mpinodes,
+    threads,
     # stdout, stderr,
     # input, output,
     # module,
@@ -49,7 +51,7 @@ def editjobconfig(
 
     # job_config['general']['stdout'] = stdout
     # job_config['general']['stderr'] = stderr
-    job_config['general']['mpinodes'] = nodes
+    job_config['general']['mpinodes'] = mpinodes
     job_config['general']['threads'] = threads
 
     # job_config[program]['input'] = input
@@ -68,6 +70,8 @@ def write_submit_lsi(
     template_file,
     job_config_file,
     program,
+    mpinodes,
+    threads,
     # stdout, stderr,
     # input, output,
     # module,
@@ -87,6 +91,8 @@ def write_submit_lsi(
     job_config = editjobconfig(
                         job_config_file=job_config_file,
                         program=program,
+                        mpinodes=mpinodes,
+                        threads=threads,
                         # stdout, stderr,
                         # input, output,
                         # module,

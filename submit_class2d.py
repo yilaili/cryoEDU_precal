@@ -141,7 +141,7 @@ def submit(**args):
     time = args['time']
     program = args['program']
     mpinodes = args['mpinodes']
-    threads = job_config['general']['threads']
+    threads = job_config['general']['threads'][cluster]
     # threads = args['threads']
 
     specs = outdir_naming(**args)

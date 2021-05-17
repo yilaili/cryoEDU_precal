@@ -2,8 +2,8 @@
   "general": {
     "stdout": "2DClass/run.out ",
     "stderr": "2DClass/run.err ",
-    "mpinodes": 10,
-    "threads": 10
+    "mpinodes": "10",
+    "threads": "10"
   },
   "relion_Class2D": {
     "module": "relion-cpu/3.1.0",

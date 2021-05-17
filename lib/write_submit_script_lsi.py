@@ -132,7 +132,7 @@ def write_submit_lsi(
                 .replace('$$stderr', job_config['general']['stderr'])\
                 .replace('$$threads', job_config['general']['threads'])\
                 .replace('$$time', cluster_config[cluster]['time'])\
-                .replace('$$modules', job_config[program][cluster]['module'])\
+                .replace('$$modules', job_config[program]['module'][cluster])\
                 .replace('$$command_to_run', command)
                 # new_f.write(newline.encode('utf-8'))
                 new_f.write(newline)

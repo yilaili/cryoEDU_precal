@@ -130,7 +130,7 @@ def write_submit_lsi(
                 .replace('$$mpinodes', job_config['general']['mpinodes'])\
                 .replace('$$stdout', job_config['general']['stdout'])\
                 .replace('$$stderr', job_config['general']['stderr'])\
-                .replace('$$threads', job_config['general']['threads'])\
+                .replace('$$threads', job_config['general']['threads'][cluster])\
                 .replace('$$time', cluster_config[cluster]['time'])\
                 .replace('$$modules', job_config[program]['module'][cluster])\
                 .replace('$$command_to_run', command)

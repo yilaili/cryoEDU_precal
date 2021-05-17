@@ -3,7 +3,10 @@
     "stdout": "",
     "stderr": "",
     "mpinodes": "10",
-    "threads": "10"
+    "threads": {
+      "lsi": "10",
+      "herzik": "6"
+    }
   },
   "relion_Class2D": {
     "module": {

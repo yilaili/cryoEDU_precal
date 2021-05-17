@@ -141,6 +141,7 @@ def submit(**args):
     time = args['time']
     program = args['program']
     mpinodes = args['mpinodes']
+    threads = job_config['general']['threads']
     # threads = args['threads']
 
     specs = outdir_naming(**args)
@@ -151,7 +152,7 @@ def submit(**args):
 
     parameters = editparameters(job_config[program]['parameters'],
                                 input, output,
-                                args['diameter'], args['numclass'], args['tau2_fudge'], args['threads'],
+                                args['diameter'], args['numclass'], args['tau2_fudge'], threads,
                                 args['ctf'], args['ctf_intact_first_peak'], args['zero_mask'])
 
     write_submit_lsi(

@@ -118,15 +118,14 @@ def write_submit_lsi(
         with open(submission_script, 'w') as new_f:
             for line in f:
                 # newline = line.decode('utf-8').replace('$$job_name', cluster_config[cluster]['job_name'])\
-                newline = line
-                .replace('$$jobname', cluster_config[cluster]['jobname'])
-                .replace('$$queuename', cluster_config[cluster]['queuename'])
-                .replace('$$mpinodes', cluster_config[cluster]['mpinodes'])
-                .replace('$$stdout', job_config['general']['stdout'])
-                .replace('$$stderr', job_config['general']['stderr'])
-                .replace('$$threads', cluster_config[cluster]['threads'])
-                .replace('$$time', cluster_config[cluster]['time'])
-                .replace('$$modules', job_config[program]['module'])
+                newline = line.replace('$$jobname', cluster_config[cluster]['jobname'])\
+                .replace('$$queuename', cluster_config[cluster]['queuename'])\
+                .replace('$$mpinodes', cluster_config[cluster]['mpinodes'])\
+                .replace('$$stdout', job_config['general']['stdout'])\
+                .replace('$$stderr', job_config['general']['stderr'])\
+                .replace('$$threads', cluster_config[cluster]['threads'])\
+                .replace('$$time', cluster_config[cluster]['time'])\
+                .replace('$$modules', job_config[program]['module'])\
                 .replace('$$command_to_run', command)
                 # new_f.write(newline.encode('utf-8'))
                 new_f.write(newline)

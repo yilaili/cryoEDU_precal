@@ -78,7 +78,7 @@ def editparameters(
             .replace('$$diameter', diameter)\
             .replace('$$numclass', numclass)\
             .replace('$$tau2_fudge', tau2_fudge)\
-            .replace('$$j', threads)
+            .replace('$$threads', threads)
 
     if ctf:
         new_s += '--ctf '

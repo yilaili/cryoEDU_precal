@@ -185,7 +185,7 @@ def submit(**args):
     cmd = 'sbatch ' + submission_script
     jobid = subprocess.check_output(cmd, shell=True)
     jobid = jobid.decode("utf-8")
-    jobid = str(int(job_id))
+    jobid = str([int(s) for s in jobid.split() if s.isdigit()][0])
 
     with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
         f.write('Job submitted. Parameters is %s. Job ID is %s.\n' %(specs, jobid))

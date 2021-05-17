@@ -73,8 +73,7 @@ def editparameters(
     if not ctf:
         assert not ctf_intact_first_peak
 
-    new_s = s
-            .replace('$$input', input)
+    new_s = s.replace('$$input', input)
             .replace('$$output', output)
             .replace('$$diameter', diameter)
             .replace('$$numclass', numclass)

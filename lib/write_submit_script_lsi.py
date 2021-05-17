@@ -86,12 +86,12 @@ def write_submit_lsi(
 
     job_config = editjobconfig(
                         job_config_file=job_config_file,
-                        program,
+                        program=program,
                         # stdout, stderr,
                         # input, output,
                         # module,
                         # command,
-                        parameters,
+                        parameters=parameters,
                         )
 
     cluster_config = editclusterconfig(

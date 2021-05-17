@@ -13,11 +13,11 @@ for diam in 120 180 250 350
 do
   for tau2_fudge in 1 2 8 24
   do
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --mpinodes 2 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --mpinodes 5 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --mpinodes 2 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --mpinodes 5 &
     wait
   done
 done
@@ -27,11 +27,11 @@ for diam in 120 180 250 350
 do
   for tau2_fudge in 1 2 8 24
   do
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --mpinodes 2 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --mpinodes 5 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --mpinodes 2 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --mpinodes 5 &
     wait
   done
 done
@@ -41,11 +41,11 @@ for diam in 120 180 250 350
 do
   for tau2_fudge in 1 2 8 24
   do
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 2 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 5 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 2 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --mpinodes 5 &
     wait
   done
 done
@@ -56,11 +56,11 @@ for diam in 120 180 250 350
 do
   for tau2_fudge in 1 2 8 24
   do
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 2 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 5 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 2 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --zero_mask --mpinodes 5 &
     wait
   done
 done
@@ -70,11 +70,11 @@ for diam in 120 180 250 350
 do
   for tau2_fudge in 1 2 8 24
   do
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 2 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 5 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 2 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --zero_mask --mpinodes 5 &
     wait
   done
 done
@@ -84,11 +84,11 @@ for diam in 120 180 250 350
 do
   for tau2_fudge in 1 2 8 24
   do
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 1 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 2 &
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 5 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 3 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 10 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 25 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 1 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 50 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 2 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles_1.star -d $diam -K 100 --tau2_fudge $tau2_fudge --ctf --ctf_intact_first_peak --zero_mask --mpinodes 5 &
     wait
   done
 done

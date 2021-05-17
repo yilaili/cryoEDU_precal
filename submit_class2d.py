@@ -149,6 +149,8 @@ def submit(**args):
     input = args['input']
     output_dir = os.path.join(args['output'], specs)
     output = '%s/run '%output_dir
+    stdout = '%s/run.out'%output_dir
+    stderr = '%s/run.err'%output_dir
 
     parameters = editparameters(job_config[program]['parameters'],
                                 input, output,
@@ -163,6 +165,8 @@ def submit(**args):
         job_config_file=job_config_file,
         program=program,
         mpinodes=mpinodes,
+        stdout=stdout,
+        stderr=stderr,
         # threads=threads,
         parameters=parameters,
         jobname=jobname,

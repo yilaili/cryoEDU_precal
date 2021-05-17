@@ -1,7 +1,7 @@
 {
   "general": {
-    "stdout": "2DClass/run.out ",
-    "stderr": "2DClass/run.err ",
+    "stdout": "",
+    "stderr": "",
     "mpinodes": "10",
     "threads": "10"
   },

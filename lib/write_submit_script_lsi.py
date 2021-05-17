@@ -38,7 +38,7 @@ def editjobconfig(
     program,
     mpinodes,
     # threads,
-    # stdout, stderr,
+    stdout, stderr,
     # input, output,
     # module,
     # command,
@@ -49,8 +49,8 @@ def editjobconfig(
     with open(job_config_file, 'r') as f:
         job_config = json.load(f)
 
-    # job_config['general']['stdout'] = stdout
-    # job_config['general']['stderr'] = stderr
+    job_config['general']['stdout'] = stdout
+    job_config['general']['stderr'] = stderr
     job_config['general']['mpinodes'] = mpinodes
     # job_config['general']['threads'] = threads
 
@@ -72,7 +72,7 @@ def write_submit_lsi(
     program,
     mpinodes,
     # threads,
-    # stdout, stderr,
+    stdout, stderr,
     # input, output,
     # module,
     # command,
@@ -93,7 +93,7 @@ def write_submit_lsi(
                         program=program,
                         mpinodes=mpinodes,
                         # threads=threads,
-                        # stdout, stderr,
+                        stdout, stderr,
                         # input, output,
                         # module,
                         # command,

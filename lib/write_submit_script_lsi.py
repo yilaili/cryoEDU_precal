@@ -52,6 +52,7 @@ def parse_config(job_config, program):
 def write_submit_lsi(
     codedir,
     projdir,
+    submission_script_dir,
     submission_script,
     template_file,
     job_config,
@@ -88,7 +89,7 @@ def write_submit_lsi(
 
     ## Below: write the submission file
     with open(os.path.join(codedir, template_file), 'r') as f:
-        with open(os.path.join(projdir, submission_script), 'w') as new_f:
+        with open(os.path.join(submission_script_dir, submission_script), 'w') as new_f:
             for line in f:
                 # newline = line.decode('utf-8').replace('$$job_name', cluster_config[cluster]['job_name'])\
                 newline = line.replace('$$jobname', cluster_config[cluster]['jobname'])\

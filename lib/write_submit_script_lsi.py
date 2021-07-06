@@ -93,10 +93,10 @@ def write_submit_lsi(
                 # newline = line.decode('utf-8').replace('$$job_name', cluster_config[cluster]['job_name'])\
                 newline = line.replace('$$jobname', cluster_config[cluster]['jobname'])\
                 .replace('$$queuename', cluster_config[cluster]['queuename'])\
-                .replace('$$mpinodes', job_config['general']['mpinodes'])\
+                .replace('$$mpinodes', str(job_config['general']['mpinodes']))\
                 .replace('$$stdout', job_config['general']['stdout'])\
                 .replace('$$stderr', job_config['general']['stderr'])\
-                .replace('$$threads', job_config['general']['threads'][cluster])\
+                .replace('$$threads', str(job_config['general']['threads'][cluster]))\
                 .replace('$$time', cluster_config[cluster]['time'])\
                 .replace('$$modules', job_config[program]['module'][cluster])\
                 .replace('$$command_to_run', command)

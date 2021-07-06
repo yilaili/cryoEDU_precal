@@ -7,6 +7,8 @@ import subprocess
 import time
 import shutil
 import re
+import string
+import random
 
 from lib.check_if_done import check_state_lsi
 from lib.write_submit_script_lsi import write_submit_lsi
@@ -32,7 +34,9 @@ def setupParserOptions():
     ap.add_argument('-o','--output', default='Class2D',
                     help="Name of the directory where the outputs of 2d classification are stored.")
     ap.add_argument('-p', '--program', default='relion_Class2D',
-                    help='The program to use to do particle extraction. Currently only supports relion_class2d.')
+                    help='The program to use to do particle extraction. Currently only supports relion_Class2D.')
+    ap.add_argument('--projdir',
+                    help="Provide the RELION project directory (main directory).")
     ## Program specific parameters
     ap.add_argument('-d', '--diameter',
                     help="Diameter of the particle to be used in 2D classification (in Angstrom).")
@@ -65,29 +69,94 @@ def setupParserOptions():
     return args
 
 
-def editparameters(
-    s, input, output,
-    diameter, numclass, tau2_fudge, threads,
+def outdir_naming(length=6):
+
+    # ctf = 1 if args['ctf'] else 0
+    # ctf_intact_first_peak = 1 if args['ctf_intact_first_peak'] else 0
+    # zero_mask = 1 if args['zero_mask'] else 0
+    # params = [
+    #     ('diam-{:s}', args['diameter']),
+    #     ('K-{:s}', args['numclass']),
+    #     ('tau2-{:s}', args['tau2_fudge']),
+    #     ('ctf-{:01d}', ctf),
+    #     ('ign1p-{:01d}', ctf_intact_first_peak),
+    #     ('zerom-{:01d}', zero_mask)]
+    # specs = '_'.join([t.format(v) for (t, v) in params])
+    # return specs
+
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length)) # random string with length=length
+
+
+def editjobconfig(
+    job_config, save_path,
+    mpinodes, stdout, stderr,
+    input, output, diameter, numclass, tau2_fudge, threads,
     ctf, ctf_intact_first_peak, zero_mask):
+
+    '''
+    Modify the job_config according to the parameters, and then
+    save it to the save_path as job.json.
+    '''
+
+    job_config['general']['stdout'] = stdout
+    job_config['general']['stderr'] = stderr
+    job_config['general']['mpinodes'] = mpinodes
 
     if not ctf:
         assert not ctf_intact_first_peak
 
-    new_s = s.replace('$$input', input)\
-            .replace('$$output', output)\
-            .replace('$$diam', diameter)\
-            .replace('$$numclass', numclass)\
-            .replace('$$tau2_fudge', tau2_fudge)\
-            .replace('$$threads', threads)
+    parameters = job_config['relion_Class2D']['parameters']
+
+    parameters['--i'] = input
+    parameters['--o'] = output
+    parameters['--particle_diameter'] = diameter
+    parameters['--K'] = numclass
+    parameters['--tau2_fudge'] = tau2_fudge
+    parameters['--j'] = threads
 
     if ctf:
-        new_s += '--ctf '
+        parameters['--ctf'] = True
     if ctf_intact_first_peak:
-        new_s += '--ctf_intact_first_peak '
+        parameters['--ctf_intact_first_peak'] = True
     if zero_mask:
-        new_s += '--zero_mask '
+        parameters['--zero_mask'] = True
 
-    return new_s
+    with open(os.path.join(save_path, 'job.json'), 'w') as outfile:
+        json.dump(job_config, outfile)
+
+    return job_config
+
+
+def parse_config(job_config):
+    '''
+    Parse the parameters in the config file (already read as a dict) into the command form.
+    '''
+    command = job_config['relion_Class2D']['command']
+    parameters = job_config['relion_Class2D']['parameters'].copy() # make a copy rather than modify in place.
+
+    for key in list(parameters):
+        if isinstance(parameters[key], bool):
+            if parameters[key]:
+                parameters[key] = ""
+            else:
+                parameters.pop(key)
+
+    cmd = command + ' '.join('{} {}'.format(key, val) for key, val in parameters.items())
+
+    return cmd
+
+
+def save_pipeline(job_config, save_path):
+    '''
+    Save pipeline.json file to keep track of the input--output link of this job.
+    '''
+    pipeline = {
+        'input': job_config['relion_Class2D']['parameters']['--i'],
+        'output': job_config['relion_Class2D']['parameters']['--o']
+        }
+
+    with open(os.path.join(save_path, 'pipeline.json'), 'w') as outfile:
+        json.dump(pipeline, outfile)
 
 
 def check_good(class_dir):
@@ -98,35 +167,17 @@ def check_good(class_dir):
     return os.path.isfile(os.path.join(class_dir, 'run_it025_model.star'))
 
 
-def outdir_naming(**args):
-    ## Output directory naming
-    ctf = 1 if args['ctf'] else 0
-    ctf_intact_first_peak = 1 if args['ctf_intact_first_peak'] else 0
-    zero_mask = 1 if args['zero_mask'] else 0
-    params = [
-        ('diam-{:s}', args['diameter']),
-        ('K-{:s}', args['numclass']),
-        ('tau2-{:s}', args['tau2_fudge']),
-        ('ctf-{:01d}', ctf),
-        ('ign1p-{:01d}', ctf_intact_first_peak),
-        ('zerom-{:01d}', zero_mask)]
-    specs = '_'.join([t.format(v) for (t, v) in params])
-
-    return specs
-
-
 def submit(**args):
 
     cluster = args['cluster']
     codedir = os.path.abspath(os.path.join(os.path.realpath(sys.argv[0]), os.pardir))
-    wkdir = os.path.abspath(os.path.join(os.path.dirname(args['input']), os.pardir))
+    projdir = args['projdir']
     cluster_config_file = 'config/cluster_config.json'
     job_config_file = 'config/config_class2d.json'
 
     ## mkdir to setup the job
-    os.chdir(wkdir)
     try:
-        os.mkdir(args['output'])
+        os.mkdir(os.path.join(projdir, args['output']))
     except OSError:
         pass
 
@@ -144,55 +195,54 @@ def submit(**args):
     threads = job_config['general']['threads'][cluster]
     # threads = args['threads']
 
-    specs = outdir_naming(**args)
-    submission_script = 'submit_%s_%s.sh' %(args['program'], specs)
+    outname = outdir_naming()
+    submission_script = 'submit_%s_%s.sh' %(args['program'], outname)
     input = args['input']
-    output_dir = os.path.join(args['output'], specs)
+    output_dir = os.path.join(args['output'], outname)
     output = '%s/run '%output_dir
     stdout = '%s/run.out'%output_dir
     stderr = '%s/run.err'%output_dir
 
-    parameters = editparameters(job_config[program]['parameters'],
-                                input, output,
-                                args['diameter'], args['numclass'], args['tau2_fudge'], threads,
-                                args['ctf'], args['ctf_intact_first_peak'], args['zero_mask'])
+    # make the subdirectory under the output directory (Class2D)
+    try:
+        shutil.rmtree(os.path.join(projdir, output_dir))
+        os.mkdir(os.path.join(projdir, output_dir))
+    except OSError:
+        os.mkdir(os.path.join(projdir, output_dir))
+
+    job_config = editjobconfig(
+        job_config, output_dir,
+        mpinodes, stdout, stderr,
+        input, output, args['diameter'], args['numclass'], args['tau2_fudge'], threads,
+        args['ctf'], args['ctf_intact_first_peak'], args['zero_mask']
+        )
+
+    save_pipeline(job_config, output_dir)
 
     write_submit_lsi(
         codedir=codedir,
-        wkdir=wkdir,
+        projdir=projdir,
         submission_script=submission_script,
         template_file=args['template'],
-        job_config_file=job_config_file,
+        job_config=job_config,
         program=program,
-        mpinodes=mpinodes,
-        stdout=stdout,
-        stderr=stderr,
-        # threads=threads,
-        parameters=parameters,
         jobname=jobname,
         time=time,
-        cluster_config_file=cluster_config_file,
+        cluster_config=cluster_config,
         cluster=cluster,
         )
 
-    os.chdir(wkdir)
-    try:
-        shutil.rmtree(output_dir)
-        os.mkdir(output_dir)
-    except OSError:
-        os.mkdir(output_dir) # make "specs" directory under the output directory
-
     cmd = 'sbatch ' + submission_script
-    jobid = subprocess.check_output(cmd, shell=True)
+    jobid = subprocess.check_output(cmd, shell=True, cwd=projdir)
     jobid = jobid.decode("utf-8")
     jobid = str([int(s) for s in jobid.split() if s.isdigit()][0])
 
-    with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
-        f.write('Job submitted. Parameters is %s. Job ID is %s.\n' %(specs, jobid))
+    with open(os.path.join(projdir, '%s_%s.log'%(args['program'], specs)), 'a+') as f:
+        f.write('Job submitted. Job directory name is %s. Job ID is %s.\n' %(outname, jobid))
     querycmd = cluster_config[cluster]['querycmd']
     keyarg = cluster_config[cluster]['keyarg']
 
-    return jobid, querycmd, keyarg
+    return jobid, querycmd, keyarg, output_dir
 
 
 def check_complete(jobid, querycmd, keyarg):
@@ -205,18 +255,15 @@ def check_complete(jobid, querycmd, keyarg):
         state = check_state_lsi(querycmd, jobid, keyarg)
 
 
-def check_output_good(**args):
-    wkdir = os.path.abspath(os.path.join(os.path.dirname(args['input']), os.pardir))
-    os.chdir(wkdir)
-
-    specs = outdir_naming(**args)
-    output_dir = os.path.join(args['output'], specs)
+def check_output_good(**args, output_dir):
+    projdir = args['projdir']
+    os.chdir(projdir)
 
     ## Below: check if the particle picking output is correct.
-    with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
+    with open(os.path.join(projdir, '%s_%s.log'%(args['program'], specs)), 'a+') as f:
         f.write('Job done. Checking outputs....\n')
     isgood = check_good(output_dir)
-    with open('%s_%s.log' %(args['program'], specs), 'a+') as f:
+    with open(os.path.join(projdir, '%s_%s.log' %(args['program'], specs))., 'a+') as f:
         if isgood:
             f.write('2D classification for %s has finished.\n'%specs)
         else:
@@ -225,6 +272,6 @@ def check_output_good(**args):
 
 if __name__ == '__main__':
     args = setupParserOptions()
-    jobid, querycmd, keyarg = submit(**args)
+    jobid, querycmd, keyarg, output_dir = submit(**args)
     check_complete(jobid, querycmd, keyarg)
-    check_output_good(**args)
+    check_output_good(**args, output_dir)

@@ -12,7 +12,7 @@ import os
 def editclusterconfig(
     jobname,
     time,
-    cluster_config_file,
+    cluster_config,
     cluster,
     # queuename,
     # querycmd,
@@ -21,8 +21,6 @@ def editclusterconfig(
     '''
     Edit the cluster config json file.
     '''
-    with open(cluster_config_file, 'r') as f:
-        cluster_config = json.load(f)
 
     cluster_config[cluster]['jobname'] = jobname
     cluster_config[cluster]['time'] = time
@@ -33,96 +31,64 @@ def editclusterconfig(
     return cluster_config
 
 
-def editjobconfig(
-    job_config_file,
-    program,
-    mpinodes,
-    # threads,
-    stdout, stderr,
-    # input, output,
-    # module,
-    # command,
-    parameters):
+def parse_config(job_config):
     '''
-    Edit the job config file with the input information.
+    Parse the parameters in the config file (already read as a dict) into the command form.
     '''
-    with open(job_config_file, 'r') as f:
-        job_config = json.load(f)
+    command = job_config[program]['command']
+    parameters = job_config[program]['parameters'].copy() # make a copy rather than modify in place.
 
-    job_config['general']['stdout'] = stdout
-    job_config['general']['stderr'] = stderr
-    job_config['general']['mpinodes'] = mpinodes
-    # job_config['general']['threads'] = threads
+    for key in list(parameters):
+        if isinstance(parameters[key], bool):
+            if parameters[key]:
+                parameters[key] = ""
+            else:
+                parameters.pop(key)
 
-    # job_config[program]['input'] = input
-    # job_config[program]['output'] = output
-    # job_config[program]['module'] = module
-    # job_config[program]['command'] = command
-    job_config[program]['parameters'] = parameters
-
-    return job_config
+    cmd = command + ' '.join('{} {}'.format(key, val) for key, val in parameters.items())
+    return cmd
 
 
 def write_submit_lsi(
     codedir,
-    wkdir,
+    projdir,
     submission_script,
     template_file,
-    job_config_file,
+    job_config,
     program,
-    mpinodes,
-    # threads,
-    stdout, stderr,
-    # input, output,
-    # module,
-    # command,
-    parameters,
     jobname, time,
-    cluster_config_file,
+    cluster_config,
     cluster,
     # queuename='sb-96',
     # querycmd='squeue --noheader --long --states=completing,running,pending,configuring -j ',
     # keyarg="job_state = ",
     ):
 
-    # wkdir is the directory where the submission file is written into
+    # projdir is the directory where the submission file is written into
     # codedir is the directory where all the template files are
-
-    job_config = editjobconfig(
-                        job_config_file=job_config_file,
-                        program=program,
-                        mpinodes=mpinodes,
-                        # threads=threads,
-                        stdout=stdout,
-                        stderr=stderr,
-                        # input, output,
-                        # module,
-                        # command,
-                        parameters=parameters,
-                        )
 
     cluster_config = editclusterconfig(
                         jobname=jobname,
                         time=time,
-                        cluster_config_file=cluster_config_file,
+                        cluster_config=cluster_config,
                         cluster=cluster,
                         # queuename=queuename,
                         # querycmd=querycmd,
                         # keyarg=keyarg,
                         )
 
-    command = job_config[program]['command'] + job_config[program]['parameters']
+    command = parse_config(job_config)
 
-    os.chdir(wkdir)
+    # os.chdir(projdir)
     ## Below: remove the submission file if exists
     try:
-        os.remove(submission_script)
+        os.remove(os.path.join(projdir, submission_script))
     except OSError:
         pass
 
     ## Below: write the submission file
     with open(os.path.join(codedir, template_file), 'r') as f:
-        with open(submission_script, 'w') as new_f:
+        with open(os.path.join(projdir, submission_script), 'w') as new_f:
             for line in f:
                 # newline = line.decode('utf-8').replace('$$job_name', cluster_config[cluster]['job_name'])\
                 newline = line.replace('$$jobname', cluster_config[cluster]['jobname'])\

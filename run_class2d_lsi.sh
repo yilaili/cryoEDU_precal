@@ -13,7 +13,7 @@ for diam in 120 180 250 350
 do
   for tau2_fudge in 1 2 8 24
   do
-    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles.star --projdir /lsi/groups/mcianfroccolab/yilai/cryoEDU_precal_results/T20S -d $diam -K 3 --tau2_fudge $tau2_fudge --mpinodes 2 &
+    python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i Extract/job014/particles.star --projdir /lsi/groups/mcianfroccolab/yilai/cryoEDU_precal_results/T20S -d $diam -K 3 --tau2_fudge $tau2_fudge --mpinodes 2 &
     python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles.star -d $diam -K 10 --tau2_fudge $tau2_fudge --mpinodes 2 &
     python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles.star -d $diam -K 25 --tau2_fudge $tau2_fudge --mpinodes 2 &
     python /lsi/groups/mcianfroccolab/yilai/codes/cryoEDU_precal/submit_class2d.py -i job014/particles.star -d $diam -K 50 --tau2_fudge $tau2_fudge --mpinodes 4 &

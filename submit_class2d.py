@@ -255,15 +255,15 @@ def check_complete(jobid, querycmd, keyarg):
         state = check_state_lsi(querycmd, jobid, keyarg)
 
 
-def check_output_good(**args, output_dir):
+def check_output_good(output_dir, **args):
     projdir = args['projdir']
-    os.chdir(projdir)
+    # os.chdir(projdir)
 
     ## Below: check if the particle picking output is correct.
     with open(os.path.join(projdir, '%s_%s.log'%(args['program'], specs)), 'a+') as f:
         f.write('Job done. Checking outputs....\n')
-    isgood = check_good(output_dir)
-    with open(os.path.join(projdir, '%s_%s.log' %(args['program'], specs))., 'a+') as f:
+    isgood = check_good(os.path.join(projdir, output_dir))
+    with open(os.path.join(projdir, '%s_%s.log' %(args['program'], specs)), 'a+') as f:
         if isgood:
             f.write('2D classification for %s has finished.\n'%specs)
         else:

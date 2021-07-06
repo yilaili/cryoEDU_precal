@@ -237,7 +237,7 @@ def submit(**args):
     jobid = jobid.decode("utf-8")
     jobid = str([int(s) for s in jobid.split() if s.isdigit()][0])
 
-    with open(os.path.join(projdir, '%s_%s.log'%(args['program'], specs)), 'a+') as f:
+    with open(os.path.join(projdir, '%s_%s.log'%(args['program'], output_dir)), 'a+') as f:
         f.write('Job submitted. Job directory name is %s. Job ID is %s.\n' %(outname, jobid))
     querycmd = cluster_config[cluster]['querycmd']
     keyarg = cluster_config[cluster]['keyarg']
@@ -260,14 +260,14 @@ def check_output_good(output_dir, **args):
     # os.chdir(projdir)
 
     ## Below: check if the particle picking output is correct.
-    with open(os.path.join(projdir, '%s_%s.log'%(args['program'], specs)), 'a+') as f:
+    with open(os.path.join(projdir, '%s_%s.log'%(args['program'], output_dir)), 'a+') as f:
         f.write('Job done. Checking outputs....\n')
     isgood = check_good(os.path.join(projdir, output_dir))
-    with open(os.path.join(projdir, '%s_%s.log' %(args['program'], specs)), 'a+') as f:
+    with open(os.path.join(projdir, '%s_%s.log' %(args['program'], output_dir)), 'a+') as f:
         if isgood:
-            f.write('2D classification for %s has finished.\n'%specs)
+            f.write('2D classification for %s has finished.\n'%output_dir)
         else:
-            f.write('Submission job %s is done but the output may not be right. Please check.\n'%specs)
+            f.write('Submission job %s is done but the output may not be right. Please check.\n'%output_dir)
 
 
 if __name__ == '__main__':

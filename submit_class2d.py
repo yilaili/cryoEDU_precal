@@ -234,7 +234,7 @@ def submit(**args):
         cluster=cluster,
         )
 
-    cmd = 'sbatch ' + submission_script
+    cmd = 'sbatch ' + os.path.join(submission_script_dir, submission_script)
     jobid = subprocess.check_output(cmd, shell=True, cwd=projdir)
     jobid = jobid.decode("utf-8")
     jobid = str([int(s) for s in jobid.split() if s.isdigit()][0])

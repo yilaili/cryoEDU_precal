@@ -274,4 +274,4 @@ if __name__ == '__main__':
     args = setupParserOptions()
     jobid, querycmd, keyarg, output_dir = submit(**args)
     check_complete(jobid, querycmd, keyarg)
-    check_output_good(**args, output_dir)
+    check_output_good(output_dir, **args)

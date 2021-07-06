@@ -211,13 +211,13 @@ def submit(**args):
         os.mkdir(os.path.join(projdir, output_dir))
 
     job_config = editjobconfig(
-        job_config, output_dir,
+        job_config, os.path.join(projdir, output_dir),
         mpinodes, stdout, stderr,
         input, output, args['diameter'], args['numclass'], args['tau2_fudge'], threads,
         args['ctf'], args['ctf_intact_first_peak'], args['zero_mask']
         )
 
-    save_pipeline(job_config, output_dir)
+    save_pipeline(job_config, os.path.join(projdir, output_dir))
 
     write_submit_lsi(
         codedir=codedir,

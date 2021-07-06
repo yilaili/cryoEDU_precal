@@ -31,7 +31,7 @@ def editclusterconfig(
     return cluster_config
 
 
-def parse_config(job_config):
+def parse_config(job_config, program):
     '''
     Parse the parameters in the config file (already read as a dict) into the command form.
     '''
@@ -77,7 +77,7 @@ def write_submit_lsi(
                         # keyarg=keyarg,
                         )
 
-    command = parse_config(job_config)
+    command = parse_config(job_config, program)
 
     # os.chdir(projdir)
     ## Below: remove the submission file if exists

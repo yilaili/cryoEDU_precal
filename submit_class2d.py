@@ -244,7 +244,7 @@ def submit(**args):
     querycmd = cluster_config[cluster]['querycmd']
     keyarg = cluster_config[cluster]['keyarg']
 
-    return jobid, querycmd, keyarg, output_dir
+    return jobid, querycmd, keyarg, outname
 
 
 def check_complete(jobid, querycmd, keyarg):
@@ -257,8 +257,9 @@ def check_complete(jobid, querycmd, keyarg):
         state = check_state_lsi(querycmd, jobid, keyarg)
 
 
-def check_output_good(output_dir, **args):
+def check_output_good(outname, **args):
     projdir = args['projdir']
+    output_dir = os.path.join(args['output'], outname)
     # os.chdir(projdir)
 
     ## Below: check if the particle picking output is correct.
@@ -274,6 +275,6 @@ def check_output_good(output_dir, **args):
 
 if __name__ == '__main__':
     args = setupParserOptions()
-    jobid, querycmd, keyarg, output_dir = submit(**args)
+    jobid, querycmd, keyarg, outname = submit(**args)
     check_complete(jobid, querycmd, keyarg)
-    check_output_good(output_dir, **args)
+    check_output_good(outname, **args)

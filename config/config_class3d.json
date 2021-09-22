@@ -8,7 +8,7 @@
       "herzik": 6
     }
   },
-  "relion_Class2D": {
+  "relion_Class3D": {
     "module": {
       "lsi": "module load relion-cpu/3.1.0",
       "herzik": "module load openmpi/4.0.0 relion/3.1b cuda/10.0"
@@ -17,26 +17,27 @@
     "parameters": {
       "--i": null,
       "--o": null,
+      "--ref": null,
+      "--firstiter_cc": true,
       "--dont_combine_weights_via_disc": true,
-      "--pool": 3,
+      "--pool": 100,
       "--pad": 2,
       "--iter": 25,
-      "--tau2_fudge": null,
-      "--particle_diameter": null,
-      "--K": null,
       "--flatten_solvent": true,
       "--oversampling": 1,
-      "--psi_step": 10,
       "--offset_range": 5,
       "--offset_step": 2,
       "--norm": true,
       "--scale": true,
       "--j": null,
-      "--ctf": false,
-      "--ctf_intact_first_peak": false,
-      "--zero_mask": false,
-      "--dont_skip_align": false,
-      "--highres_limit": false
+      "--zero_mask": true,
+      "--K": null,
+      "--particle_diameter": null,
+      "--ctf": true,
+      "--ini_high": -1,
+      "--tau2_fudge": null,
+      "--sym": "C1",
+      "--healpix_order": 2
       }
   }
 }

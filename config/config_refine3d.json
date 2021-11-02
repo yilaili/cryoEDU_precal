@@ -1,0 +1,44 @@
+{
+  "general": {
+    "stdout": "",
+    "stderr": "",
+    "mpinodes": 10,
+    "threads": {
+      "lsi": 10,
+      "herzik": 6
+    }
+  },
+  "relion_Refine3D": {
+    "module": {
+      "lsi": "module load relion-cpu/3.1.0",
+      "herzik": "module load openmpi/4.0.0 relion/3.1b cuda/10.0"
+    },
+    "command": "`which relion_refine_mpi` ",
+    "parameters": {
+      "--i": null,
+      "--o": null,
+      "--ref": null,
+      "--auto_refine": true,
+      "--split_random_halves": true,
+      "--firstiter_cc": true,
+      "--ini_high": 30,
+      "--dont_combine_weights_via_disc": true,
+      "--pool": 3,
+      "--pad": 2,
+      "--ctf": true,
+      "--particle_diameter": null,
+      "--flatten_solvent": true,
+      "--zero_mask": true,
+      "--oversampling": 1,
+      "--healpix_order": 2,
+      "--auto_local_healpix_order": 4,
+      "--offset_range": 5,
+      "--offset_step": 2,
+      "--sym": "C1",
+      "--low_resol_join_halves": 40,
+      "--norm": true,
+      "--scale": true,
+      "--j": 4
+      }
+  }
+}
